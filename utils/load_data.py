@@ -35,7 +35,7 @@ def get_pos(chr='21', reload=False):
                                                'million.Positive.*.' + chr + '.recheck.with.bampath.list'))
         re_df = None
         for fname in chr_pos_files:
-            tmp_df = pd.read_csv(_input['million_sample_lst'], sep='\t', header=None)
+            tmp_df = pd.read_csv(fname, sep='\t', header=None)
             logging.info(fname)
             logging.info('# of samples of chr {}: {}'.format(chr, tmp_df.shape))
             if tmp_df.shape[0] > 0:
