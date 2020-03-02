@@ -47,11 +47,12 @@ def get_pos(chr='21', reload=False):
                 else:
                     re_df = pd.concat([re_df, tmp_df], axis=0, sort=False)
 
-        logging.info('# of total samples of chr {}: {}'.format(chr, re_df.shape))
+        logging.info('# of total pos samples of chr {}: {}'.format(chr, re_df.shape))
         if os.path.exists(out_pos_fname):
             os.remove(out_pos_fname)
 
         re_df.to_csv(out_pos_fname, sep='\t', index=False)
+        logging.info('Done, results saved at: {}'.format(out_pos_fname))
         return re_df
 
 
