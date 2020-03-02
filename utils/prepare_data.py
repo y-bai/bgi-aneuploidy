@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 """
-    File Name: load_data.py
+    File Name: prepare_data.py
     Description:
     
 Created by YongBai on 2020/3/2 1:21 PM.
@@ -35,11 +35,11 @@ def get_pos(chr='21', reload=False):
                                                'million.Positive.*.' + chr + '.recheck.with.bampath.list'))
         re_df = None
         for fname in chr_pos_files:
-            tmp_df = pd.read_csv(fname, sep='\t', header=None)
+            tmp_df = pd.read_csv(fname, sep='\t', header=None, usecols=[0], names=['Sample_id'])
             logging.info(fname)
             logging.info('# of samples of chr {}: {}'.format(chr, tmp_df.shape))
             if tmp_df.shape[0] > 0:
-                tmp_sample_ids = tmp_df.iloc[:, 0].values
+                tmp_sample_ids = tmp_df['Sample_id'].values
                 tmp_df = milli_df[milli_df['Sample_id'].isin(tmp_sample_ids)]
                 tmp_df['DSource'] = os.path.basename(fname)
                 if re_df is None:

@@ -16,5 +16,5 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
-    re_df = get_pos()
+    re_df = get_pos(chr='13')
     logger.info(re_df.head())
