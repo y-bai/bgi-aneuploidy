@@ -22,5 +22,6 @@
    ```
 2. `million.Positive.True.21.recheck.with.bampath.list`表示NIPT检测是TP的样本，`million.Positive.False.18.recheck.with.bampath.list`
 表示NIPT检测结果是FN的样本。
+
    
  
