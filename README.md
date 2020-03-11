@@ -21,7 +21,30 @@
     sample_id2      47;XN;+21       F/F/T/P seq_lane_id      sample_id1      bam_related_files
    ```
 2. `million.Positive.True.21.recheck.with.bampath.list`表示NIPT检测是TP的样本，`million.Positive.False.18.recheck.with.bampath.list`
-表示NIPT检测结果是FN的样本。
+表示NIPT检测结果是FN的样本。也就是说文件夹`million.Insurance.database`下面都是recheck过的正样本（三倍体），而文件`million.Negative.recheck.with.bampath.list`
+包含T21, T18, T13的所有NIPT检测是FP的样本（也就是真实是阴性即整倍体的样本）。
+
+3. 使用`./data_preprocess/data_prepare.py`是对文件夹`million.Insurance.database`和文件`million.Negative.recheck.with.bampath.list`(FP)进行
+处理，生成的文件为
+调用代码：
+```python
+from data_preprocess import get_seq_lst
+
+get_seq_lst(reload=False, seq_type='fn', chr='18', in_fname='million.Positive.False.18.recheck.with.bampath.list')
+```
+生成的所有文件是：
+```
+tp.21.million.bampath.list
+tp.18.million.bampath.list
+tp.13.million.bampath.list
+fp.21.million.bampath.list 
+fp.18.million.bampath.list 
+fp.13.million.bampath.list 
+fn.21.million.bampath.list
+fn.18.million.bampath.list
+```
+
+4. `lims.FMD.csv`为FF浓度。
 
    
  
