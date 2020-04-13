@@ -34,5 +34,6 @@ out_corr="/zfssz2/ST_MCHRI/BIGDATA/USER/baiyong/aneuploidy_predict/out_chr21.bw"
 #--binSize 50000 -o ${out_corr} -r chr21" > run_script.sh
 #qsub -cwd -P P18Z10200N0124 -q st_gpu1.q -l vf=40g,p=1 run_script.sh
 echo "python main.py">run_script.sh
+#qsub -cwd -P P18Z10200N0124 -q st.q -l vf=40g,p=1 run_script.sh
 qsub -cwd -P P18Z10200N0124 -q st_gpu1.q -l vf=40g,p=1 run_script.sh
 

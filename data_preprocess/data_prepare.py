@@ -18,15 +18,17 @@ from utils import get_config
 def get_seq_lst(reload=False, seq_type='tp', chr='21', in_fname=None):
     """
     processing files in folder: million.Insurance.database:
+        TP:
         million.Positive.True.21.recheck.with.bampath.list
         million.Positive.True.18.recheck.with.bampath.list
         million.Positive.True.13.recheck.with.bampath.list
 
+        FN:
         million.Positive.False.21.recheck.with.bampath.list
         million.Positive.False.18.recheck.with.bampath.list
         million.Positive.False.13.recheck.with.bampath.list
     :param reload
-    :param seq_type:
+    :param seq_type: tp or fn
     :param chr:
     :param in_fname:
     :return:
@@ -42,6 +44,7 @@ def get_seq_lst(reload=False, seq_type='tp', chr='21', in_fname=None):
         else:
             return pd.read_csv(out_pos_fname, sep='\t')
 
+    # get the absolute path for the input file name.
     seq_data_path = os.path.join(data_in_root, data_dir_conf['input_pos_dir'])
     seq_tp_fname = os.path.join(seq_data_path, in_fname)
     mil_sample_fname = data_dir_conf['million_sample_lst']
@@ -128,8 +131,23 @@ def get_fp_seq_lst(chr='21', reload=False):
             return milli_fp_df
 
 
+def _load_samples(in_fname):
+    """
+
+    :param in_fname:
+    :return:
+    """
+    in_df = pd.read_csv(in_fname, sep='\t', dtype=str)
+    in_df['SAMPLE_AGE'] = in_df['SAMPLE_AGE'].astype(float)
+    in_df['HEIGHT'] = in_df['HEIGHT'].astype(float)
+    in_df['WEIGHT'] = in_df['WEIGHT'].astype(float)
+    in_df['FF'] = in_df['FF'].astype(float)
+    return in_df
+
+
 def get_sample_info(reload=False, seq_type='tp', chr='21'):
     """
+    get sample info for tp, fp, fn, for 21, 18, 13, respectively
     :param reload
     :param seq_type: tp, fp, fn
     :param chr: 21, 18, 13
@@ -144,13 +162,7 @@ def get_sample_info(reload=False, seq_type='tp', chr='21'):
         if not os.path.exists(out_fname):
             sys.exit("Error: {} not found.".format(out_fname))
 
-        sample_info_df = pd.read_csv(out_fname, sep='\t', dtype=str)
-        sample_info_df['SAMPLE_AGE'] = sample_info_df['SAMPLE_AGE'].astype(float)
-        sample_info_df['HEIGHT'] = sample_info_df['HEIGHT'].astype(float)
-        sample_info_df['WEIGHT'] = sample_info_df['WEIGHT'].astype(float)
-        sample_info_df['FF'] = sample_info_df['FF'].astype(float)
-
-        return sample_info_df
+        return _load_samples(out_fname)
 
     milli_info_fname = data_dir_conf['million_info_fname']
     seq_bam_fname = os.path.join(data_in_root, seq_type + '.' + chr + '.million.bampath.list')
@@ -210,13 +222,7 @@ def get_tn_info(reload=False):
         if not os.path.exists(out_fname):
             sys.exit("Error: {} not found.".format(out_fname))
 
-        tn_df = pd.read_csv(out_fname, sep='\t', dtype=str)
-        tn_df['SAMPLE_AGE'] = tn_df['SAMPLE_AGE'].astype(float)
-        tn_df['HEIGHT'] = tn_df['HEIGHT'].astype(float)
-        tn_df['WEIGHT'] = tn_df['WEIGHT'].astype(float)
-        tn_df['FF'] = tn_df['FF'].astype(float)
-
-        return tn_df
+        return _load_samples(out_fname)
 
     # get tp, fp, fn
     seq_types = ['tp', 'fp', 'fn']
@@ -282,6 +288,41 @@ def get_tn_info(reload=False):
 
     tn_df.to_csv(out_fname, sep='\t', index=False)
     return tn_df
+
+
+def get_tn_sample_4train(reload=False, n_samples=1600):
+    """
+    sampling the samples from tn.million.all.info.list for trainning
+    :param reload:
+    :param n_samples:
+    :return:
+    """
+
+    # load all tns
+    data_dir_conf = get_config()['data_dir']
+    data_in_root = data_dir_conf['data_root_dir']
+
+    tn_fname = os.path.join(data_in_root, 'tn.million.all.info.list')
+    out_fname = os.path.join(data_in_root, 'tn.million.4train.info.list')
+    if reload:
+        if not os.path.exists(out_fname):
+            sys.exit('Error: {} not found.'.format(out_fname))
+        return _load_samples(out_fname)
+
+    tns_df = _load_samples(tn_fname)
+    sampled_tns = tns_df.sample(n=n_samples, random_state=123)
+    if os.path.exists(out_fname):
+        os.remove(out_fname)
+    sampled_tns.to_csv(out_fname, sep='\t', index=False)
+    return sampled_tns
+
+
+
+
+
+
+
+
 
 
 
